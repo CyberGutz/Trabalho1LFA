@@ -1,4 +1,5 @@
 from operator import truediv
+from re import X
 
 
 class AutomatoFD:
@@ -119,11 +120,38 @@ class AutomatoFD:
 
         return s
 
+    def __str__(self):
+        s = 'AFD(E, A, T, i, F): \n'
+
+        s += '  E = { '
+        for e in self.estados:
+            s += '{}, '.format(str(e))
+        s += '}\n'
+
+        s += '  A = { '
+        for a in self.alfabeto:
+            s += '{}, '.format(a)
+        s += '}\n'
+
+        s += '  T = { '
+        for (e,a) in self.transicoes:
+            d = self.transicoes[(e, a)]
+            s += "({}, '{}') -> {} ".format(e, a, d)
+        s += '}\n'
+
+        s += '  i = {}'.format(self.inicial)
+
+        s += '  F = { '
+        for e in self.finais:
+            s += '{}, '.format(str(e))
+        s += '}'
+        return s
+
     
     def afdToTxt(self):
-        s = self.afdToS
-
-        fname = input("Digite o nome do arquivo (com .txt no final)")
+        s = self.afdToS()
+        fname = input("Digite o nome do arquivo: ")
+        fname = fname + ".txt"
 
         try:
             saida = open(fname, "w")
@@ -142,6 +170,14 @@ class AutomatoFD:
             return True
         except:
             print("Não foi possível ler o arquivo")
+
+
+    def copiaAfd(afd):
+        copia = afd;
+        return copia;
+
+    
+    
 
         
     
