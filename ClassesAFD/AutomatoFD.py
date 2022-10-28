@@ -170,36 +170,35 @@ class AutomatoFD:
         try:
             entrada = open(fname)
             frase = entrada.read()
-
-            chaveF = frase.find('}')
-            eChave = frase.find('E = {')
-            estados = frase[eChave:chaveF]
-            print(estados)
-
-            chaveF = frase.find('}', chaveF+1)
-            aChave = frase.find('A = {')
-            alfabeto = frase[aChave:chaveF]
-            print(alfabeto)
-
-            chaveF = frase.find('}', chaveF+1)
-            tChave = frase.find('T = {')
-            transicoes = frase[tChave:chaveF]
-            print(transicoes)
-
-            iChave = frase.find('i =')
-            inicial = frase[iChave+4]
-            print(inicial)
-
-            chaveF = frase.find('}', chaveF+1)
-            fChave = frase.find('F = {')
-            finais = frase[fChave:chaveF]
-            print(finais)
-            
-            return True
-
         except:
             print("Não foi possível ler o arquivo")
             return False
+
+
+        chaveF = frase.find('}')
+        eChave = frase.find('E = {')
+        estados = frase[eChave:chaveF]
+        print(estados)
+
+        chaveF = frase.find('}', chaveF+1)
+        aChave = frase.find('A = {')
+        alfabeto = frase[aChave:chaveF]
+        print(alfabeto)
+
+        chaveF = frase.find('}', chaveF+1)
+        tChave = frase.find('T = {')
+        transicoes = frase[tChave:chaveF]
+        print(transicoes)
+
+        iChave = frase.find('i =')
+        inicial = frase[iChave+4]
+        print(inicial)
+
+        chaveF = frase.find('}', chaveF+1)
+        fChave = frase.find('F = {')
+        finais = frase[fChave:chaveF]
+        print(finais)
+        
 
 
     def copiaAfd(afd):
