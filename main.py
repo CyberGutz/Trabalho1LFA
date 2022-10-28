@@ -1,7 +1,7 @@
 from ClassesAFD import AutomatoFD as af
 
 if __name__ == "__main__":
-    afd = af.AutomatoFD('a,b')
+    afd = af.AutomatoFD('ab')
 
     for i in range(1,3):
         afd.criaEstado(i)
@@ -18,3 +18,5 @@ if __name__ == "__main__":
     print(afd)
 
     afd.afdToTxt()
+
+    afd.txtToAfd();
