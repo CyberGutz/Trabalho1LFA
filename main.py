@@ -1,4 +1,5 @@
 from ClassesAFD import AutomatoFD as af
+from ClassesAFD import Util as ut
 
 if __name__ == "__main__":
     afd = af.AutomatoFD('ab')
@@ -8,6 +9,7 @@ if __name__ == "__main__":
     
     afd.mudaEstadoInicial(1)
     afd.mudaEstadoFinal(2,True)
+    afd.mudaEstadoFinal(1,True)
 
     afd.criaTransicao(1, 2, 'a')
     afd.criaTransicao(2, 1, 'a')
@@ -17,6 +19,12 @@ if __name__ == "__main__":
 
     print(afd)
 
-    afd.afdToTxt()
+    carregado = afd.txtToAfd();
 
-    afd.txtToAfd();
+    print("Carregado: ",carregado)
+
+    novo = ut.copiaAfd(carregado)
+
+    print("Duplicado: ",novo)
+
+

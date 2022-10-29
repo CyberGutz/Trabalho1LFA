@@ -1,10 +1,7 @@
-from operator import truediv
-from os import fchdir
-from re import X
+from ClassesAFD import Util as ut
 
 
 class AutomatoFD:
-    
     # CRIA O AUTOMATO VAZIO
     def __init__(self, Alfabeto):
         Alfabeto = str(Alfabeto)            
@@ -14,13 +11,15 @@ class AutomatoFD:
         self.inicial = None
         self.finais = set()
 
-    #LIMPA O AUTOMATO
+
+    # LIMPA O AUTÔMATO
     def limpaAfd(self):
         """Inicializa variáveis utilizadas no processamento de cadeias."""
         self.__deuErro = False
         self.__estadoAtual = self.inicial
 
 
+    # CRIA UM ESTADO DO AUTÔMATO
     def criaEstado(self, id, inicial = False, final = False):
         id = int(id)
         if id in self.estados:
@@ -35,6 +34,8 @@ class AutomatoFD:
 
         return True
 
+
+    # CRIA UMA TRANSIÇÃO
     def criaTransicao(self, origem, destino, simbolo):
         origem = int(origem)
         destino = int(destino)
@@ -48,14 +49,16 @@ class AutomatoFD:
         self.transicoes[(origem, simbolo)] = destino
         return True
 
-    
+
+    # DEFINE O ESTADO INICIAL
     def mudaEstadoInicial(self, id):
         if not id in self.estados:
             return
         
         self.inicial = id
 
-    
+
+    # DEFINE O ESTADO FINAL
     def mudaEstadoFinal(self, id, final):
         if not id in self.estados:
             return
@@ -66,6 +69,7 @@ class AutomatoFD:
             self.finais = self.finais.difference({id})
 
 
+    # ANDA PELA CADEIA
     def move(self, cadeia):
         for simbolo in cadeia:
             if not simbolo in self.alfabeto:
@@ -81,76 +85,53 @@ class AutomatoFD:
         return self.__estadoAtual
 
 
+    # RETORNA SE DEU ERRO
     def deuErro(self):
         return self.__deuErro
 
 
+    # RETORNA O ESTADO ATUAL
     def estadoAtual(self):
         return self.__estadoAtual
 
 
+    # RETORNA O ESTADO FINAL
     def estadoFinal(self, id):
         return id in self.finais
 
 
-    def afdToS(self):
-        s = 'AFD(E, A, T, i, F): \n'
-
-        s += '  E = { '
-        for e in self.estados:
-            s += '{}, '.format(str(e))
-        s += '}\n'
-
-        s += '  A = { '
-        for a in self.alfabeto:
-            s += '{}, '.format(a)
-        s += '}\n'
-
-        s += '  T = { '
-        for (e,a) in self.transicoes:
-            d = self.transicoes[(e, a)]
-            s += "({}, '{}') -> {} ".format(e, a, d)
-        s += '}\n'
-
-        s += '  i = {}'.format(self.inicial)
-
-        s += '  F = { '
-        for e in self.finais:
-            s += '{}, '.format(str(e))
-        s += '}'
-
-        return s
-
+    # SEMPRE QUE O AUTÔMATO FOR REPRESENTADO EM FORMA DE STRING, ELE VAI USAR ESSA REPRESENTAÇÃO
     def __str__(self):
-        s = 'AFD(E, A, T, i, F): \n'
+        s = '\n\nAFD(E, A, T, i, F): \n'
 
-        s += '  E = { '
+        s += 'E = { '
         for e in self.estados:
             s += '{}, '.format(str(e))
         s += '}\n'
 
-        s += '  A = { '
+        s += 'A = { '
         for a in self.alfabeto:
             s += '{}, '.format(a)
         s += '}\n'
 
-        s += '  T = { '
+        s += 'T={'
         for (e,a) in self.transicoes:
             d = self.transicoes[(e, a)]
-            s += "({}, '{}') -> {} ".format(e, a, d)
+            s += " ({}, '{}'): {}, ".format(e, a, d)
         s += '}\n'
 
-        s += '  i = {}'.format(self.inicial)
+        s += 'i = {}'.format(self.inicial)
 
         s += '  F = { '
         for e in self.finais:
             s += '{}, '.format(str(e))
-        s += '}'
+        s += '}\n\n'
         return s
 
     
+    # SALVA O AFD EM UM ARQUIVO TEXTO
     def afdToTxt(self):
-        s = self.afdToS()
+        s = str(self)
         fname = input("Digite o nome do arquivo: ")
         fname = fname + ".txt"
 
@@ -163,6 +144,7 @@ class AutomatoFD:
             return False
 
 
+    # CARREGA O AFD DE UM ARQUIVO TEXTO
     def txtToAfd(self):
         fname = input("Digite o nome do arquivo: ")
         fname = fname + ".txt"
@@ -174,38 +156,56 @@ class AutomatoFD:
             print("Não foi possível ler o arquivo")
             return False
 
+        toremove = "{ },=AEFT()':"
 
         chaveF = frase.find('}')
         eChave = frase.find('E = {')
         estados = frase[eChave:chaveF]
-        print(estados)
+        estados = ut.char_remove(estados, toremove)
 
         chaveF = frase.find('}', chaveF+1)
         aChave = frase.find('A = {')
         alfabeto = frase[aChave:chaveF]
-        print(alfabeto)
+        alfabeto = ut.char_remove(alfabeto, toremove)
 
         chaveF = frase.find('}', chaveF+1)
-        tChave = frase.find('T = {')
+        tChave = frase.find('T={')
         transicoes = frase[tChave:chaveF]
-        print(transicoes)
+        transicoes = ut.char_remove(transicoes, toremove)
 
         iChave = frase.find('i =')
         inicial = frase[iChave+4]
-        print(inicial)
 
         chaveF = frase.find('}', chaveF+1)
         fChave = frase.find('F = {')
         finais = frase[fChave:chaveF]
-        print(finais)
-        
-
-
-    def copiaAfd(afd):
-        copia = afd;
-        return copia;
-
+        finais = ut.char_remove(finais, toremove)
     
+        novoAf = AutomatoFD(alfabeto)
+        novoAf.estados = estados
+        i=0
+        while i < len(transicoes):
+            origem = transicoes[i]
+            simbolo = transicoes[i+1]
+            destino = transicoes[i+2]
+            novoAf.transicoes[(origem, simbolo)] = destino
+            i = i+3
+        novoAf.finais = finais
+        novoAf.inicial = inicial
+
+        print("\n\nO autômato carregado foi: ")
+        print(novoAf)
+        return novoAf
+
+
+    # COPIA UM AFD PARA OUTRO. NA VERDADE ESSA FUNÇÃO PODE SER USADA PRA COPIAR QUALQUER COISA, VISTO QUE O PYTHON TEM TIPAGEM DINÂMICA
+    def copiaAfd(afd):
+            copia = afd;
+            return copia;
+
+
+
+   
     
 
         
